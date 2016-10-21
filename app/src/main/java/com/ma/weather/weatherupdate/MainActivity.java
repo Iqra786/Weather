@@ -10,13 +10,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.ma.weather.weatherupdate.json_model.Condition;
 import com.ma.weather.weatherupdate.json_model.Item;
 
@@ -24,12 +19,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class MainActivity extends AppCompatActivity implements MainActivityView, OnMapReadyCallback, GoogleMap.OnMapClickListener {
+public class MainActivity extends AppCompatActivity implements MainActivityView {
 
 
     public static final String TAG = MainActivity.class.getSimpleName();
     private SupportMapFragment mSupportMapFragment;
-    private Marker mMarker; // hold current marker
     private MainActivityPresenter mainActivityPresenter;
     @BindView(R.id.tv_Title)
     TextView tv_Title;
@@ -50,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView,
         ButterKnife.bind(this);
         mainActivityPresenter = new MainActivityPresenter(this, getApplicationContext());
         mSupportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+
     }
 
     @Override
@@ -65,31 +60,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityView,
         mainActivityPresenter.stopRequest();
     }
 
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mainActivityPresenter.dropPinRequest(googleMap);
-    }
-
-
-    private void dropMarker(double latitude, double longitude, GoogleMap googleMap) {
-        MarkerOptions markerOptions = new MarkerOptions();
-        LatLng latLng = new LatLng(latitude, longitude);
-        markerOptions.position(latLng);
-        mMarker = googleMap.addMarker(markerOptions);
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-    }
-
-
-    @Override
-    public void onMapClick(LatLng latLng) {
-        if (latLng != null) {
-            if (mMarker != null) {
-                mMarker.remove();
-//                dropMarker(latLng.latitude, latLng.longitude, mGoogleMap);
-            }
-        }
-    }
 
 
     @Override
@@ -141,12 +111,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityView,
     }
 
     @Override
-    public void loadMap() {
-        mSupportMapFragment.getMapAsync(this);
+    public void locationUpdated() {
+        mainActivityPresenter.loadMap(mSupportMapFragment);
     }
 
     @Override
     public void dropPin(Double latitude, Double longitude, GoogleMap googleMap) {
-        dropMarker(latitude, longitude, googleMap);
+//        dropMarker(latitude, longitude, googleMap);
     }
 }

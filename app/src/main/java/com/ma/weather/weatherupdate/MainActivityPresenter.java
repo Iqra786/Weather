@@ -5,12 +5,13 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.support.v4.app.ActivityCompat;
+
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.ma.weather.weatherupdate.json_model.Channel;
 import com.ma.weather.weatherupdate.json_model.Item;
 import com.ma.weather.weatherupdate.json_model.Query;
@@ -21,28 +22,32 @@ import com.ma.weather.weatherupdate.weather.DOManager;
 import com.ma.weather.weatherupdate.weather.GeoOperationImpl;
 import com.ma.weather.weatherupdate.weather.GoogleApiClientBuilder;
 import com.ma.weather.weatherupdate.weather.GoogleApiServicesRequest;
+import com.ma.weather.weatherupdate.weather.GoogleMapImpl;
 import com.ma.weather.weatherupdate.weather.LocationChangeListener;
 import com.ma.weather.weatherupdate.weather.LocationRequestBuilder;
 import com.ma.weather.weatherupdate.weather.LocationUpdateResponse;
+import com.ma.weather.weatherupdate.weather.MapResponse;
 
 import java.io.IOException;
 import java.util.Locale;
+
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 
-class MainActivityPresenter implements GoogleApiResponse, GoogleApiServicesRequest, LocationUpdateResponse {
+class MainActivityPresenter implements GoogleApiResponse, GoogleApiServicesRequest, LocationUpdateResponse, MapResponse {
 
     private MainActivityView mainActivityView;
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
     private Context context;
-    private Location location;
+    private double lat;
+    private double lng;
     private LocationChangeListener locationListener;
 
 
-     MainActivityPresenter(MainActivityView mainActivityView, Context applicationContext) {
+    MainActivityPresenter(MainActivityView mainActivityView, Context applicationContext) {
         this.mainActivityView = mainActivityView;
         locationRequest = new LocationRequestBuilder().builder();
         context = applicationContext;
@@ -92,51 +97,64 @@ class MainActivityPresenter implements GoogleApiResponse, GoogleApiServicesReque
     }
 
     void dropPinRequest(GoogleMap googleMap) {
-        mainActivityView.dropPin(location.getLatitude(), location.getLongitude(), googleMap);
+        mainActivityView.dropPin(lat, lng, googleMap);
+    }
+
+    void loadMap(SupportMapFragment mapFragment) {
+        mapFragment.getMapAsync(new GoogleMapImpl(this));
     }
 
     @Override
-    public void locationUpdateResponse(Location location) {
-        if (location != null) {
-            this.location = location;
-            mainActivityView.loadMap();
-            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-            GeoOperationImpl geoOperation = new GeoOperationImpl();
-            Address result = null;
-            try {
-                result = geoOperation.getAddress(geocoder, location.getLatitude(), location.getLongitude());
-                LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient , locationListener);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            final String query = geoOperation.convertAddressToSting(result);
-            DOManager doManager = new DOManager();
-            doManager.requestData(query, "json").subscribeOn(Schedulers.newThread()).
-                    observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Subscriber<Query>() {
-                @Override
-                public void onCompleted() {
-                    unsubscribe();
-                    System.out.println("OnComplete");
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    System.out.println("OnError");
-                }
-
-                @Override
-                public void onNext(Query queryCall) {
-                    System.out.println("OnNext");
-                    Query_ responseData = queryCall.getQuery();
-                    Results results = responseData.getResults();
-                    Channel channel = results.getChannel();
-                    Item item = channel.getItem();
-                    mainActivityView.setData(item);
-                }
-            });
+    public void locationUpdateResponse(double lat, double lng) {
+        this.lat = lat;
+        this.lng = lng;
+        mainActivityView.locationUpdated();
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        GeoOperationImpl geoOperation = new GeoOperationImpl();
+        Address result = null;
+        try {
+            result = geoOperation.getAddress(geocoder, lat, lng);
+            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, locationListener);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        final String query = geoOperation.convertAddressToSting(result);
+        DOManager doManager = new DOManager();
+        doManager.requestData(query, "json").subscribeOn(Schedulers.newThread()).
+                observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Query>() {
+                    @Override
+                    public void onCompleted() {
+                        unsubscribe();
+                        System.out.println("OnComplete");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        System.out.println("OnError");
+                    }
+
+                    @Override
+                    public void onNext(Query queryCall) {
+                        System.out.println("OnNext");
+                        Query_ responseData = queryCall.getQuery();
+                        Results results = responseData.getResults();
+                        Channel channel = results.getChannel();
+                        Item item = channel.getItem();
+                        mainActivityView.setData(item);
+                    }
+                });
+    }
+
+
+    @Override
+    public void mapLoaded() {
+
+    }
+
+    @Override
+    public void newLocation(double latitude, double longitude) {
+        locationUpdateResponse(latitude, longitude);
     }
 }

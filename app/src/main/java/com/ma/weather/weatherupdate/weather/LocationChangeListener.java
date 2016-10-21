@@ -6,7 +6,7 @@ import com.google.android.gms.location.LocationListener;
 
 public class LocationChangeListener implements LocationListener {
 
-    LocationUpdateResponse locationUpdateResponse;
+    private LocationUpdateResponse locationUpdateResponse;
 
     public LocationChangeListener(LocationUpdateResponse locationUpdateResponse) {
         this.locationUpdateResponse = locationUpdateResponse;
@@ -19,8 +19,7 @@ public class LocationChangeListener implements LocationListener {
         }
         else {
             System.out.println("location is null" + location.getLatitude() + " , " + location.getLongitude());
-            locationUpdateResponse.locationUpdateResponse(location);
-
+            locationUpdateResponse.locationUpdateResponse(location.getLatitude() , location.getLongitude());
         }
     }
 
