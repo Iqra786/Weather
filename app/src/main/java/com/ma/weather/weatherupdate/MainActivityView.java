@@ -1,7 +1,7 @@
 package com.ma.weather.weatherupdate;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.ma.weather.weatherupdate.json_model.Item;
+import com.ma.weather.weatherupdate.model.Item;
 
 public interface MainActivityView {
     void showProgress();

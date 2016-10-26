@@ -8,5 +8,5 @@ import rx.Observable;
 
 public interface WeatherApi {
     @GET("/v1/public/yql")
-    Observable<com.ma.weather.weatherupdate.json_model.Query> getWoeidNo(@Query("q") String latLng, @Query("format") String responseFormat);
+    Observable<com.ma.weather.weatherupdate.model.Query> getWoeidNo(@Query("q") String latLng, @Query("format") String responseFormat);
 }

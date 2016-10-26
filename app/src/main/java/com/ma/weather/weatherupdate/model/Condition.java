@@ -1,5 +1,5 @@
 
-package com.ma.weather.weatherupdate.json_model;
+package com.ma.weather.weatherupdate.model;
 
 
 import com.google.gson.annotations.Expose;
@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 
-public class Forecast implements Serializable {
+public class Condition implements Serializable {
 
     @SerializedName("code")
     @Expose
@@ -16,15 +16,9 @@ public class Forecast implements Serializable {
     @SerializedName("date")
     @Expose
     private String date;
-    @SerializedName("day")
+    @SerializedName("temp")
     @Expose
-    private String day;
-    @SerializedName("high")
-    @Expose
-    private String high;
-    @SerializedName("low")
-    @Expose
-    private String low;
+    private String temp;
     @SerializedName("text")
     @Expose
     private String text;
@@ -68,55 +62,19 @@ public class Forecast implements Serializable {
     /**
      * 
      * @return
-     *     The day
+     *     The temp
      */
-    public String getDay() {
-        return day;
+    public String getTemp() {
+        return temp;
     }
 
     /**
      * 
-     * @param day
-     *     The day
+     * @param temp
+     *     The temp
      */
-    public void setDay(String day) {
-        this.day = day;
-    }
-
-    /**
-     * 
-     * @return
-     *     The high
-     */
-    public String getHigh() {
-        return high;
-    }
-
-    /**
-     * 
-     * @param high
-     *     The high
-     */
-    public void setHigh(String high) {
-        this.high = high;
-    }
-
-    /**
-     * 
-     * @return
-     *     The low
-     */
-    public String getLow() {
-        return low;
-    }
-
-    /**
-     * 
-     * @param low
-     *     The low
-     */
-    public void setLow(String low) {
-        this.low = low;
+    public void setTemp(String temp) {
+        this.temp = temp;
     }
 
     /**

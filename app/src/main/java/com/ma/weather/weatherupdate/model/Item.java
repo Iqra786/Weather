@@ -1,5 +1,5 @@
 
-package com.ma.weather.weatherupdate.json_model;
+package com.ma.weather.weatherupdate.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;

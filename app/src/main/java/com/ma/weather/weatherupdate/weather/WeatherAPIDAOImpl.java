@@ -1,9 +1,8 @@
 package com.ma.weather.weatherupdate.weather;
 
-import com.ma.weather.weatherupdate.json_model.Query;
+import com.ma.weather.weatherupdate.model.Query;
 
 
-import retrofit2.Call;
 import retrofit2.Retrofit;
 import rx.Observable;
 

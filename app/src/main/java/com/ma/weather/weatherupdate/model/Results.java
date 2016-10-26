@@ -1,5 +1,5 @@
 
-package com.ma.weather.weatherupdate.json_model;
+package com.ma.weather.weatherupdate.model;
 
 
 import com.google.gson.annotations.Expose;

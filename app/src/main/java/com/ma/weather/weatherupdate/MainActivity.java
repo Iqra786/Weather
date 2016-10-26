@@ -12,8 +12,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.ma.weather.weatherupdate.json_model.Condition;
-import com.ma.weather.weatherupdate.json_model.Item;
+import com.ma.weather.weatherupdate.model.Condition;
+import com.ma.weather.weatherupdate.model.Item;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     protected void onResume() {
         super.onResume();
         mainActivityPresenter.startRequest();
-
     }
 
     @Override
