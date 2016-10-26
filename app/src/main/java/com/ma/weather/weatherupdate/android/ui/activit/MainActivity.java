@@ -1,4 +1,4 @@
-package com.ma.weather.weatherupdate;
+package com.ma.weather.weatherupdate.android.ui.activit;
 
 
 
@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.ma.weather.weatherupdate.R;
 import com.ma.weather.weatherupdate.model.Condition;
 import com.ma.weather.weatherupdate.model.Item;
 

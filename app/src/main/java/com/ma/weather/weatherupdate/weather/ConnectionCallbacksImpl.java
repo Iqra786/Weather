@@ -11,7 +11,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.ma.weather.weatherupdate.GoogleApiResponse;
 
-import static com.ma.weather.weatherupdate.MainActivity.TAG;
+import static com.ma.weather.weatherupdate.android.ui.activit.MainActivity.TAG;
 
 public class ConnectionCallbacksImpl implements GoogleApiClient.ConnectionCallbacks , GoogleApiClient.OnConnectionFailedListener {
 

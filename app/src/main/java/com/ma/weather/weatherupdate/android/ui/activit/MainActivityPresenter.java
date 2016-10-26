@@ -1,4 +1,4 @@
-package com.ma.weather.weatherupdate;
+package com.ma.weather.weatherupdate.android.ui.activit;
 
 import android.Manifest;
 import android.content.Context;
@@ -12,6 +12,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.ma.weather.weatherupdate.GoogleApiResponse;
 import com.ma.weather.weatherupdate.model.Channel;
 import com.ma.weather.weatherupdate.model.Item;
 import com.ma.weather.weatherupdate.model.Query;

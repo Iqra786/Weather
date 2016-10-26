@@ -1,4 +1,4 @@
-package com.ma.weather.weatherupdate;
+package com.ma.weather.weatherupdate.android.ui.activit;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.ma.weather.weatherupdate.model.Item;
