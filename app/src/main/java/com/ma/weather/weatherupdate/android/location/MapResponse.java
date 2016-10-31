@@ -1,4 +1,4 @@
-package com.ma.weather.weatherupdate.weather;
+package com.ma.weather.weatherupdate.android.location;
 
 public interface MapResponse {
     void mapLoaded();

@@ -12,22 +12,22 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.ma.weather.weatherupdate.GoogleApiResponse;
+import com.ma.weather.weatherupdate.android.location.GoogleApiResponse;
 import com.ma.weather.weatherupdate.model.Channel;
 import com.ma.weather.weatherupdate.model.Item;
 import com.ma.weather.weatherupdate.model.Query;
 import com.ma.weather.weatherupdate.model.Query_;
 import com.ma.weather.weatherupdate.model.Results;
-import com.ma.weather.weatherupdate.weather.ConnectionCallbacksImpl;
-import com.ma.weather.weatherupdate.weather.DOManager;
-import com.ma.weather.weatherupdate.weather.GeoOperationImpl;
-import com.ma.weather.weatherupdate.weather.GoogleApiClientBuilder;
-import com.ma.weather.weatherupdate.weather.GoogleApiServicesRequest;
-import com.ma.weather.weatherupdate.weather.GoogleMapImpl;
-import com.ma.weather.weatherupdate.weather.LocationChangeListener;
-import com.ma.weather.weatherupdate.weather.LocationRequestBuilder;
-import com.ma.weather.weatherupdate.weather.LocationUpdateResponse;
-import com.ma.weather.weatherupdate.weather.MapResponse;
+import com.ma.weather.weatherupdate.android.location.impl.ConnectionCallbacksImpl;
+import com.ma.weather.weatherupdate.data_manager.DOManager;
+import com.ma.weather.weatherupdate.android.location.impl.GeoOperationImpl;
+import com.ma.weather.weatherupdate.android.location.builder.GoogleApiClientBuilder;
+import com.ma.weather.weatherupdate.android.location.GoogleApiServicesRequest;
+import com.ma.weather.weatherupdate.android.location.impl.GoogleMapImpl;
+import com.ma.weather.weatherupdate.android.location.LocationChangeListener;
+import com.ma.weather.weatherupdate.android.location.builder.LocationRequestBuilder;
+import com.ma.weather.weatherupdate.android.location.LocationUpdateResponse;
+import com.ma.weather.weatherupdate.android.location.MapResponse;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -116,13 +116,20 @@ class MainActivityPresenter implements GoogleApiResponse, GoogleApiServicesReque
         try {
             result = geoOperation.getAddress(geocoder, lat, lng);
             LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, locationListener);
-        } catch (IOException e) {
+            String query = geoOperation.convertAddressToSting(result);
+            getWeatherData(query);
+        } catch (IOException|NullPointerException e) {
             e.printStackTrace();
         }
 
-        final String query = geoOperation.convertAddressToSting(result);
+
+
+    }
+
+
+    private void getWeatherData(String query) {
         DOManager doManager = new DOManager();
-        doManager.requestData(query, "json").subscribeOn(Schedulers.newThread()).
+        doManager.requestWeatherData(query, "json").subscribeOn(Schedulers.newThread()).
                 observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Query>() {
                     @Override
@@ -147,6 +154,7 @@ class MainActivityPresenter implements GoogleApiResponse, GoogleApiServicesReque
                     }
                 });
     }
+
 
 
     @Override

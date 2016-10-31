@@ -1,4 +1,4 @@
-package com.ma.weather.weatherupdate.weather;
+package com.ma.weather.weatherupdate.android.location.impl;
 
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -7,10 +7,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.ma.weather.weatherupdate.android.location.MapResponse;
 
 public class GoogleMapImpl implements OnMapReadyCallback , GoogleMap.OnMapClickListener {
 
-    private  MapResponse mapResponse;
+    private MapResponse mapResponse;
     private GoogleMap googleMap;
     private Marker marker;
 

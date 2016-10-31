@@ -1,4 +1,4 @@
-package com.ma.weather.weatherupdate.weather;
+package com.ma.weather.weatherupdate.android.location.builder;
 
 
 import com.google.android.gms.location.LocationRequest;

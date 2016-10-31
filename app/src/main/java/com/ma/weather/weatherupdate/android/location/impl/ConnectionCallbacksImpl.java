@@ -1,4 +1,4 @@
-package com.ma.weather.weatherupdate.weather;
+package com.ma.weather.weatherupdate.android.location.impl;
 
 
 
@@ -9,15 +9,13 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.ma.weather.weatherupdate.GoogleApiResponse;
+import com.ma.weather.weatherupdate.android.location.GoogleApiResponse;
 
 import static com.ma.weather.weatherupdate.android.ui.activit.MainActivity.TAG;
 
 public class ConnectionCallbacksImpl implements GoogleApiClient.ConnectionCallbacks , GoogleApiClient.OnConnectionFailedListener {
 
-//    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
    private GoogleApiResponse googleApiResponse;
-
 
     public ConnectionCallbacksImpl(GoogleApiResponse googleApiResponse) {
         this.googleApiResponse = googleApiResponse;

@@ -1,5 +1,4 @@
-package com.ma.weather.weatherupdate;
-
+package com.ma.weather.weatherupdate.android.location;
 
 
 public interface GoogleApiResponse {

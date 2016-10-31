@@ -1,4 +1,4 @@
-package com.ma.weather.weatherupdate.weather;
+package com.ma.weather.weatherupdate.android.location;
 
 
 import android.location.Location;
@@ -14,15 +14,8 @@ public class LocationChangeListener implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        if (location == null) {
-            System.out.println("location is null");
-        }
-        else {
-            System.out.println("location is null" + location.getLatitude() + " , " + location.getLongitude());
+        if (location != null) {
             locationUpdateResponse.locationUpdateResponse(location.getLatitude() , location.getLongitude());
         }
     }
-
-
-
 }
