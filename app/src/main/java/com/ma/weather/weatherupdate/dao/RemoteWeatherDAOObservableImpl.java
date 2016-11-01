@@ -12,6 +12,6 @@ public class RemoteWeatherDAOObservableImpl implements RemoteWeatherDAOObservabl
     @Override
     public Observable<Query> requestData(String latLng, String format) {
      Retrofit retrofit = new RemoteWeatherBuilder().builder("http://query.yahooapis.com");
-      return  new RemoteWeatherDAOBuilder().APIBuilder(retrofit).getWoeidNo(latLng , format);
+        return new RemoteFactoryImpl().create(retrofit).getWoeidNo(latLng, format);
     }
 }

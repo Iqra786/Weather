@@ -1,10 +1,6 @@
-package com.ma.weather.weatherupdate.android.ui.activit;
-
-
-
+package com.ma.weather.weatherupdate.android.ui.activities;
 
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -13,6 +9,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.ma.weather.weatherupdate.R;
+import com.ma.weather.weatherupdate.android.ui.base.PresenterFactory;
 import com.ma.weather.weatherupdate.model.Condition;
 import com.ma.weather.weatherupdate.model.Item;
 
@@ -20,12 +17,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class MainActivity extends AppCompatActivity implements MainActivityView {
+public class WeatherActivity extends BaseActivity<WeatherActivityPresenter , WeatherActivityView> implements WeatherActivityView {
 
 
-    public static final String TAG = MainActivity.class.getSimpleName();
+    public static final String TAG = WeatherActivity.class.getSimpleName();
+
     private SupportMapFragment mSupportMapFragment;
-    private MainActivityPresenter mainActivityPresenter;
+
     @BindView(R.id.tv_Title)
     TextView tv_Title;
     @BindView(R.id.tv_Text)
@@ -41,25 +39,20 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(setLayout());
         ButterKnife.bind(this);
-        mainActivityPresenter = new MainActivityPresenter(this, getApplicationContext());
         mSupportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        mainActivityPresenter.startRequest();
+    protected int setLayout() {
+        return R.layout.activity_main;
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        mainActivityPresenter.stopRequest();
+    protected PresenterFactory<WeatherActivityPresenter> getPresenterFactory() {
+        return new PresenterFactoryImpl(getApplicationContext());
     }
-
 
 
     @Override
@@ -112,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     @Override
     public void locationUpdated() {
+        WeatherActivityPresenter   mainActivityPresenter = (WeatherActivityPresenter) presenter;
         mainActivityPresenter.loadMap(mSupportMapFragment);
     }
 

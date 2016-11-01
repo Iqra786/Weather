@@ -1,4 +1,4 @@
-package com.ma.weather.weatherupdate.android.ui.activit;
+package com.ma.weather.weatherupdate.android.ui.activities;
 
 import android.Manifest;
 import android.content.Context;
@@ -13,6 +13,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.ma.weather.weatherupdate.android.location.GoogleApiResponse;
+import com.ma.weather.weatherupdate.android.ui.base.Presenter;
 import com.ma.weather.weatherupdate.model.Channel;
 import com.ma.weather.weatherupdate.model.Item;
 import com.ma.weather.weatherupdate.model.Query;
@@ -37,20 +38,20 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 
-class MainActivityPresenter implements GoogleApiResponse, GoogleApiServicesRequest, LocationUpdateResponse, MapResponse {
+class WeatherActivityPresenter implements GoogleApiResponse, GoogleApiServicesRequest, LocationUpdateResponse, MapResponse , Presenter<WeatherActivityView> {
 
-    private MainActivityView mainActivityView;
+    private WeatherActivityView weatherActivityView;
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
     private Context context;
     private double lat;
     private double lng;
     private LocationChangeListener locationListener;
+    private boolean isLocationUpdateRequired = true;
 
 
-    MainActivityPresenter(MainActivityView mainActivityView, Context applicationContext) {
-        this.mainActivityView = mainActivityView;
-        locationRequest = new LocationRequestBuilder().builder();
+
+    WeatherActivityPresenter(Context applicationContext) {
         context = applicationContext;
     }
 
@@ -58,24 +59,19 @@ class MainActivityPresenter implements GoogleApiResponse, GoogleApiServicesReque
     @Override
     public void googleApiClientResponse(boolean error) {
         System.out.println("response" + error);
-        if (!error) {
-            if (mainActivityView != null) {
-                // Location update Request
-                if (ActivityCompat.checkSelfPermission((Context) mainActivityView, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission((Context) mainActivityView, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-
-                locationListener = new LocationChangeListener(this);
-                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, locationListener);
-                mainActivityView.hideProgress();
+        if (!error) {git
+            if (weatherActivityView != null) {
+                weatherActivityView.hideProgress();
+                locationUpdateRequired(isLocationUpdateRequired);
             }
+        }
+    }
+
+
+    private void locationUpdateRequired(boolean locationUpdate) {
+        if (locationUpdate) {
+            locationListener = new LocationChangeListener(this);
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, locationListener);
         }
     }
 
@@ -98,7 +94,7 @@ class MainActivityPresenter implements GoogleApiResponse, GoogleApiServicesReque
     }
 
     void dropPinRequest(GoogleMap googleMap) {
-        mainActivityView.dropPin(lat, lng, googleMap);
+        weatherActivityView.dropPin(lat, lng, googleMap);
     }
 
     void loadMap(SupportMapFragment mapFragment) {
@@ -109,7 +105,7 @@ class MainActivityPresenter implements GoogleApiResponse, GoogleApiServicesReque
     public void locationUpdateResponse(double lat, double lng) {
         this.lat = lat;
         this.lng = lng;
-        mainActivityView.locationUpdated();
+        weatherActivityView.locationUpdated();
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         GeoOperationImpl geoOperation = new GeoOperationImpl();
         Address result = null;
@@ -150,7 +146,7 @@ class MainActivityPresenter implements GoogleApiResponse, GoogleApiServicesReque
                         Results results = responseData.getResults();
                         Channel channel = results.getChannel();
                         Item item = channel.getItem();
-                        mainActivityView.setData(item);
+                        weatherActivityView.setData(item);
                     }
                 });
     }
@@ -165,5 +161,30 @@ class MainActivityPresenter implements GoogleApiResponse, GoogleApiServicesReque
     @Override
     public void newLocation(double latitude, double longitude) {
         locationUpdateResponse(latitude, longitude);
+        isLocationUpdateRequired = false;
+    }
+
+    @Override
+    public void onViewAttached(WeatherActivityView view) {
+        this.weatherActivityView = view;
+            if (locationRequest == null) {
+                locationRequest = new LocationRequestBuilder().builder();
+                startRequest();
+            }
+        else {
+               startRequest();
+                view.locationUpdated();
+            }
+        System.out.println("lat & lng" + lat + "== " + lng);
+    }
+
+    @Override
+    public void onViewDetached() {
+        stopRequest();
+        this.weatherActivityView = null;
+    }
+
+    @Override
+    public void onDestroyed() {
     }
 }

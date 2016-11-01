@@ -1,9 +1,9 @@
-package com.ma.weather.weatherupdate.android.ui.activit;
+package com.ma.weather.weatherupdate.android.ui.activities;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.ma.weather.weatherupdate.model.Item;
 
-public interface MainActivityView {
+public interface WeatherActivityView {
     void showProgress();
     void hideProgress();
     void locationUpdated();
